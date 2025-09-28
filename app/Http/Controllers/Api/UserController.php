@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\ApiController;
+use App\Http\Filters\UserFilter;
 
 class UserController extends ApiController
 {
-    public function index()
+    public function index(UserFilter $filters)
     {
-        if ($this->include('books')) {
-            return UserResource::collection(User::with('books')->paginate());
-        }
-        return UserResource::collection(User::paginate());
+            return UserResource::collection(User::filter($filters)->paginate());
     }
 
     public function show(User $user)
