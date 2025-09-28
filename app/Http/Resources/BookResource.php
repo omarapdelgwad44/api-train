@@ -27,7 +27,8 @@ class BookResource extends JsonResource
                     $this->description
                 ),
                 'published_year' => $this->published_year,
-                'is_published' => $this->is_published
+                'is_published' => $this->is_published,
+                'created_at' => $this->created_at
             ],
             'relationships' => [
                 'user' => [

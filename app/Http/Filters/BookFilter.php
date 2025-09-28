@@ -3,6 +3,16 @@ namespace App\Http\Filters;
 
 class BookFilter extends QueryFilter 
 {
+    protected $sortable = 
+    [
+        'title',
+        'author',
+        'description',
+        'IsPublished'=>'is_published',
+        'PublishedYear'=>'published_year',
+        'published_year',
+        'CreatedAt'=>'created_at'
+    ];
     public function include($includes)
     {
         return $this->builder->with($includes);

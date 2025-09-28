@@ -3,6 +3,7 @@ namespace App\Http\Filters;
 
 class UserFilter extends QueryFilter 
 {
+    protected $sortable = ['email', 'name', 'createdAt'];
     public function include($includes)
     {
         return $this->builder->with($includes);
