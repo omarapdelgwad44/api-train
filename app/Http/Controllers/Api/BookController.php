@@ -20,13 +20,22 @@ class BookController extends ApiController
         return BookResource::collection(Book::filter($filters)->paginate());
     }
 
-    public function show(Book $book)
+    public function show($book_id)
     {
+        try {
+            $book = Book::findOrFail($book_id);
+
         if ($this->include('user')) {
             return new BookResource($book->load('user'));
         }
 
         return new BookResource($book);
+        
+            } catch (ModelNotFoundException $e) {
+                return $this->error('Book not found', 404);
+            }
+
+
     }
 
     public function store(StoreBook $request)
@@ -48,9 +57,15 @@ class BookController extends ApiController
         return new BookResource($book);
     }
 
-    public function destroy(Book $book)
+    public function destroy($book_id)
     {
-        $book->delete();
-        return response()->json(null, 204);
+        try {
+            $book = Book::findOrFail($book_id);
+            $book->delete();
+            return $this->success('Book deleted successfully');
+            
+        } catch (ModelNotFoundException $e) {
+            return $this->error('Book not found', 404);
+        }
     }
 }
