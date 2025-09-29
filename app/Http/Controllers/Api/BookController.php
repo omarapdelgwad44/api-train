@@ -6,10 +6,15 @@ use App\Models\Book;
 use App\Http\Resources\BookResource;
 use App\Http\Filters\BookFilter;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\Api\StoreBook;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\User;
+use App\Traits\ApiResponse;
 
 
 class BookController extends ApiController
 {
+    use ApiResponse;
     public function index( BookFilter $filters)
     {
         return BookResource::collection(Book::filter($filters)->paginate());
@@ -24,9 +29,16 @@ class BookController extends ApiController
         return new BookResource($book);
     }
 
-    public function store(Request $request)
+    public function store(StoreBook $request)
     {
-        $book = Book::create($request->all());
+        try {
+            $user = User::findOrFail($request->data['relationships']['user']['data']['id']);
+            
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', 404);
+        }
+
+        $book = $user->books()->create($request->data['attributes']);
         return new BookResource($book);
     }
 
